@@ -76,38 +76,101 @@ Invoke different services through REST with JSON
 
 [Related guide section...](https://quarkus.io/guides/rest-client)
 
-### REST
 
-Easily start your REST Web Services
+1. Product Module
 
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+    Controllers:
+        ProductController:
+            Create, update, delete, and retrieve products.
+        ProductVariantController:
+            Manage product variants (e.g., size, color).
+        ProductCategoryController:
+            Handle product categorization.
+        ProductTagController:
+            Manage product tags for filtering.
 
-### RESTEasy Client
+2. Order Module
 
-Invoke different services through REST with JSON
+    Controllers:
+        OrderController:
+            Create, update, and retrieve orders.
+        CartController:
+            Handle cart operations (add/remove items, calculate totals).
+        CheckoutController:
+            Manage the checkout process.
+        FulfillmentController:
+            Handle order fulfillment and shipping updates.
+        RefundController:
+            Process refunds for orders.
 
-[Related guide section...](https://quarkus.io/guides/resteasy-client)
+3. Customer Module
 
-### RESTEasy JAX-RS
+    Controllers:
+        CustomerController:
+            Manage customer profiles and authentication.
+        AddressController:
+            Manage customer addresses.
+        CustomerGroupController:
+            Group customers for segmentation and targeted discounts.
 
-Easily start your RESTful Web Services
+4. Payment Module
 
-[Related guide section...](https://quarkus.io/guides/getting-started#the-jax-rs-resources)
+    Controllers:
+        PaymentController:
+            Handle payment creation, updates, and refunds.
+        PaymentProviderController:
+            Manage integrations with external payment providers.
 
-### RESTEasy Qute
+5. Discount Module
 
-Create your web page using Quarkus RESTEasy & Qute
+    Controllers:
+        DiscountController:
+            Create and manage discount codes and rules.
+        DiscountConditionController:
+            Configure conditions for discounts.
 
-[Related guide section...](https://quarkus.io/guides/qute#type-safe-templates)
+6. Shipping Module
 
-### Spring Web
+    Controllers:
+        ShippingOptionController:
+            Manage shipping options and rates.
+        ShippingProviderController:
+            Integrate with shipping carriers (e.g., UPS, FedEx).
+        ShippingProfileController:
+            Create shipping profiles for products.
 
-Spring, the Quarkus way! Start your REST Web Services with a Spring Controller.
+7. Region and Tax Module
 
-[Related guide section...](https://quarkus.io/guides/spring-web#greetingcontroller)
+    Controllers:
+        RegionController:
+            Manage regions for shipping and currency settings.
+        TaxRateController:
+            Configure tax rates for regions.
 
-### WebSockets
+8. Inventory Module
 
-WebSocket communication channel starter code
+    Controllers:
+        InventoryController:
+            Track inventory levels for products and variants.
+        StockLocationController:
+            Manage stock locations and fulfillment centers.
 
-[Related guide section...](https://quarkus.io/guides/websockets)
+9. Notification Module
+
+    Controllers:
+        NotificationController:
+            Manage notifications sent to customers (e.g., emails, SMS).
+        EventController:
+            Handle events triggering notifications.
+
+10. Analytics Module
+
+    Controllers:
+        AnalyticsController:
+            Retrieve analytics data and reports.
+
+11. Plugin Module
+
+    Controllers:
+        PluginController:
+            Manage installed plugins and their configurations.
