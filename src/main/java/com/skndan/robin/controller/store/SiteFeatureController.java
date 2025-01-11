@@ -29,7 +29,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/site-features")
+@Path("/api/v1/site-features")
 @Authenticated
 @Tag(name = "Site Feature", description = "Site Feature")
 public class SiteFeatureController {

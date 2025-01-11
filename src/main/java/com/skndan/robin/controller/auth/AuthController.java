@@ -25,7 +25,7 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/auth")
+@Path("/api/v1/auth")
 @Authenticated
 @Tag(name = "Authenticate", description = "Authenticate")
 public class AuthController {
@@ -62,4 +62,6 @@ public class AuthController {
   public Response handleGoogleCallback(@RequestBody AuthRequest authRequest) {
     return keycloakService.getSocialToken(authRequest);
   }
+
+  
 }

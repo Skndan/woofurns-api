@@ -25,9 +25,15 @@ public class UserResource {
   @GET
   public Response me() {
 
-    DefaultJWTCallerPrincipal jwtPrincipal = (DefaultJWTCallerPrincipal) securityIdentity.getPrincipal();
-    String subject = jwtPrincipal.getSubject(); // Access the subject
-    AuthResponse response = profileService.getProfile(subject);
+    // DefaultJWTCallerPrincipal jwtPrincipal = (DefaultJWTCallerPrincipal) securityIdentity.getPrincipal();
+    // String subject = jwtPrincipal.getSubject(); // Access the subject
+    // AuthResponse response = profileService.getProfile(subject);
+    AuthResponse response = new AuthResponse();
+    response.setEmail("emailtorabbitt@gmail.com");
+    response.setMobile("+918248547389");
+    response.setName("Rk Rabbitt");
+    response.setProfileId("0fb24a2d-b4b7-42f9-a705-2c4743630986");
+
     return Response.ok(response).build();
   }
 

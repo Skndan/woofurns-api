@@ -15,7 +15,7 @@ public class SecurityFilter implements ContainerRequestFilter {
 
   // List of routes to exclude from authentication
   private static final List<String> EXCLUDED_ROUTES = List.of(
-      "/public", "/health", "/swagger-ui" // Add your excluded paths here
+      "/public", "/health", "/swagger-ui", "/api/v1/brand" // Add your excluded paths here
   );
 
   @Override

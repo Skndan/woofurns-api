@@ -29,7 +29,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/site-settings")
+@Path("/api/v1/site-settings")
 @Authenticated
 @Tag(name = "Site Settings", description = "Site Settings")
 public class SiteSettingController {

@@ -29,7 +29,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/custom-script")
+@Path("/api/v1/custom-script")
 @Authenticated
 @Tag(name = "Custom Script", description = "Custom Script")
 public class CustomScriptController {

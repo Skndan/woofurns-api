@@ -38,7 +38,7 @@ public class EntityService {
     Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
     List<InputPart> inputFileParts = uploadForm.get("file");
 
-    FileEntity fileInfo = new FileEntity();
+    FileEntity fileInfo = null;
 
     InputPart inputPart = inputFileParts.get(0);
 

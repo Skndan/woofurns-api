@@ -29,7 +29,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/brand")
+@Path("/api/v1/brand")
 @Authenticated
 @Tag(name = "Brand", description = "Brand")
 public class BrandController {

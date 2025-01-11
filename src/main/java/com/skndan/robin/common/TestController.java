@@ -10,7 +10,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/test")
+@Path("/api/v1/test")
 public class TestController {
   // @POST
   //   @Consumes(MediaType.APPLICATION_JSON)

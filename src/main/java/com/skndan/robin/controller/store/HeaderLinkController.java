@@ -29,7 +29,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/header-link")
+@Path("/api/v1/header-link")
 @Authenticated
 @Tag(name = "Header Link", description = "Header Link")
 public class HeaderLinkController {

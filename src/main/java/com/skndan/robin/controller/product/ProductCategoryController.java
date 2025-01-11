@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skndan.robin.config.EntityCopyUtils;
 import com.skndan.robin.entity.FileEntity;
 import com.skndan.robin.entity.product.ProductCategory;
+import com.skndan.robin.exception.GenericException;
 import com.skndan.robin.repo.product.ProductCategoryRepo;
 import com.skndan.robin.service.EntityService;
 import com.skndan.robin.service.FileService;
@@ -37,7 +38,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/product-category")
+@Path("/api/v1/product-category")
 @Authenticated
 @Tag(name = "Product Category", description = "Product Category")
 public class ProductCategoryController {
@@ -86,7 +87,7 @@ public class ProductCategoryController {
             return Response.ok(productCategory).status(200).build();
         }
 
-        throw new IllegalArgumentException("No department with id " + id + " exists");
+        throw new GenericException(400, "No department with id " + id + " exists");
     }
 
     @POST
@@ -108,7 +109,7 @@ public class ProductCategoryController {
 
             return Response.ok(productCategory).status(201).build();
         } catch (Exception e) {
-            throw new IllegalArgumentException("Unable to process your request");
+            throw new GenericException(400, "Unable to process your request");
         }
 
     }
@@ -126,21 +127,23 @@ public class ProductCategoryController {
                         ProductCategory.class);
                 entityCopyUtils.copyProperties(productCategory, updatedProductCategory);
 
-                FileEntity oldFileInfo = productCategory.getImage();
-                fileService.deleteFileEntity(oldFileInfo, filePath);
-
                 FileEntity fileInfo = entityService.extractFile(input, filePath);
                 productCategory.setImage(fileInfo);
 
                 productCategory = productCategoryRepo.save(productCategory);
 
+                if (fileInfo != null) {
+                    FileEntity oldFileInfo = productCategory.getImage();
+                    fileService.deleteFileEntity(oldFileInfo, filePath);
+                }
+
                 return Response.ok(productCategory).status(200).build();
             }
 
-            throw new IllegalArgumentException("No Product Category with id " + id + " exists");
+            throw new GenericException(400, "No Product Category with id " + id + " exists");
 
         } catch (Exception e) {
-            throw new IllegalArgumentException("No Product Category with id " + id + " exists");
+            throw new GenericException(400, "No Product Category with id " + id + " exists");
         }
     }
 
@@ -151,7 +154,7 @@ public class ProductCategoryController {
 
         ProductCategory entity = productCategoryRepo.findById(id).orElseThrow(
                 () -> new WebApplicationException("Department with id of " + id + " does not exist.", 404));
-  
+
         entity.setActive(false);
         productCategoryRepo.save(entity);
         return Response.status(204).build();

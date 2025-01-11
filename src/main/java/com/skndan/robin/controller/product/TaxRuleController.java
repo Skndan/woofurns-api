@@ -29,7 +29,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/tax-rule")
+@Path("/api/v1/tax-rule")
 @Authenticated
 @Tag(name = "Tax Rule", description = "Tax Rule")
 public class TaxRuleController {

@@ -29,7 +29,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/footer-link")
+@Path("/api/v1/footer-link")
 @Authenticated
 @Tag(name = "Footer Link", description = "Footer Link")
 public class FooterLinkController {

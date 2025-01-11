@@ -29,7 +29,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/collection")
+@Path("/api/v1/collection")
 @Authenticated
 @Tag(name = "Collection", description = "Collection")
 public class CollectionController {

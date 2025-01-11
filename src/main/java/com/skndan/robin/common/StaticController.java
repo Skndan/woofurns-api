@@ -12,7 +12,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/static")
+@Path("/api/v1/static")
 public class StaticController {
 
     @ConfigProperty(name = "file.static-location")

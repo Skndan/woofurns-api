@@ -31,7 +31,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/attribute")
+@Path("/api/v1/attribute")
 @Authenticated
 @Tag(name = "Attribute", description = "Attribute")
 public class AttributeController {

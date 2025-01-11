@@ -29,7 +29,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/site-page")
+@Path("/api/v1/site-page")
 @Authenticated
 @Tag(name = "Site Page", description = "Site Page")
 public class SitePageController {

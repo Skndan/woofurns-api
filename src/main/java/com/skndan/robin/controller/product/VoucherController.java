@@ -29,7 +29,7 @@ import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/api/voucher")
+@Path("/api/v1/voucher")
 @Authenticated
 @Tag(name = "Voucher", description = "Voucher")
 public class VoucherController {
