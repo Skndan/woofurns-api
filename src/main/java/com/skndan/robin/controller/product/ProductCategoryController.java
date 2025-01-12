@@ -116,31 +116,32 @@ public class ProductCategoryController {
 
     @PUT
     @Path("/{id}")
+    @Transactional
     public Response update(@PathParam("id") UUID id, @MultipartForm MultipartFormDataInput input) {
-        Optional<ProductCategory> optional = productCategoryRepo.findById(id);
-
         try {
+            ProductCategory productCategory = productCategoryRepo.findById(id)
+                    .orElseThrow(() -> new GenericException(400, "No Product Category with id " + id + " exists"));
 
-            if (optional.isPresent()) {
-                ProductCategory productCategory = optional.get();
-                ProductCategory updatedProductCategory = entityService.processMultipartRequest(input,
-                        ProductCategory.class);
-                entityCopyUtils.copyProperties(productCategory, updatedProductCategory);
+            FileEntity oldFileEntity = productCategory.getImage();
 
-                FileEntity fileInfo = entityService.extractFile(input, filePath);
+            ProductCategory updatedProductCategory = entityService.processMultipartRequest(input,
+                    ProductCategory.class);
+            entityCopyUtils.copyProperties(productCategory, updatedProductCategory);
+
+            FileEntity fileInfo = entityService.extractFile(input, filePath);
+
+            // New file incoming
+            if (fileInfo != null) {
                 productCategory.setImage(fileInfo);
-
-                productCategory = productCategoryRepo.save(productCategory);
-
-                if (fileInfo != null) {
-                    FileEntity oldFileInfo = productCategory.getImage();
-                    fileService.deleteFileEntity(oldFileInfo, filePath);
-                }
-
-                return Response.ok(productCategory).status(200).build();
             }
 
-            throw new GenericException(400, "No Product Category with id " + id + " exists");
+            productCategory = productCategoryRepo.save(productCategory);
+
+            if (fileInfo != null) {
+                fileService.deleteFileEntity(oldFileEntity, filePath);
+            }
+
+            return Response.ok(productCategory).status(200).build();
 
         } catch (Exception e) {
             throw new GenericException(400, "No Product Category with id " + id + " exists");

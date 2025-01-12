@@ -11,6 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
+import java.util.UUID;
+
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -61,9 +63,12 @@ public class FileService {
         }
       }
 
+      String uuid = UUID.randomUUID().toString();
+
       // Construct the file URL
       String fileUrl = "/" + folderName + "/" + fileName;
-      fileInfo.setFileName(fileName);
+      fileInfo.setName(uuid);
+      fileInfo.setOriginalFileName(fileName);
       fileInfo.setFileUrl(fileUrl);
       // TODO: hash data
 
@@ -76,7 +81,7 @@ public class FileService {
   
   @Transactional
   public boolean deleteFileByName(String dirPath, String name) {
-    fileRepo.deleteByFileName(name);
+    fileRepo.deleteByName(name);
 
     Path filePath = Paths.get(dirPath, name);
     try {
@@ -137,8 +142,8 @@ public class FileService {
 
   public void deleteFileEntity(FileEntity oldFileInfo, String filePath) {
     if (oldFileInfo != null) {
-      deleteFileByName(filePath, oldFileInfo.getFileName());
-      fileRepo.delete(oldFileInfo);
+      deleteFileByName(filePath, oldFileInfo.getName());
+      fileRepo.deleteByName(oldFileInfo.getName());
     }
   }
 }

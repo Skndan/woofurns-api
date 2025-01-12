@@ -12,6 +12,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public interface FileRepo extends CrudRepository<FileEntity, UUID>, PagingAndSortingRepository<FileEntity, UUID> {
   
-  void deleteByFileName(String name);
+  void deleteByName(String name);
 
 }

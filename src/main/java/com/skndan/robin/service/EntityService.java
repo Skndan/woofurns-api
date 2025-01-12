@@ -48,6 +48,10 @@ public class EntityService {
 
       String fileName = fileService.getFileName(header);
 
+      if(fileName.equals("unknown")) {
+        return null;
+      }
+
       InputStream inputStream = inputPart.getBody(InputStream.class, null);
 
       fileInfo = fileService.uploadFile(filePath, fileName, inputStream);

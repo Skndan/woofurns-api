@@ -9,9 +9,13 @@ import lombok.Setter;
 @Getter
 public class FileEntity extends BaseEntity { 
          
-    public String fileName;
+    public String name;
+
+    public String originalFileName;
 
     public String hash;
     
     public String fileUrl;
+
+    
 }
