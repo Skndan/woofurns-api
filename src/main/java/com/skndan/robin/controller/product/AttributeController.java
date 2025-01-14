@@ -1,6 +1,7 @@
 package com.skndan.robin.controller.product;
 
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
@@ -9,10 +10,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 import com.skndan.robin.config.EntityCopyUtils;
+import com.skndan.robin.entity.common.DocStatus;
 import com.skndan.robin.entity.product.Attribute;
 import com.skndan.robin.entity.product.AttributeValue;
+import com.skndan.robin.exception.GenericException;
+import com.skndan.robin.model.auth.product.AttributeModel;
 import com.skndan.robin.repo.product.AttributeRepo;
 import com.skndan.robin.repo.product.AttributeValueRepo;
+import com.skndan.robin.service.product.AttributeService;
 
 import io.quarkus.security.Authenticated;
 import jakarta.inject.Inject;
@@ -27,7 +32,6 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
-import jakarta.ws.rs.WebApplicationException;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
@@ -43,6 +47,9 @@ public class AttributeController {
     AttributeValueRepo attributeValueRepo;
 
     @Inject
+    AttributeService attributeService;
+
+    @Inject
     EntityCopyUtils entityCopyUtils;
 
     // TODO: add company
@@ -55,7 +62,7 @@ public class AttributeController {
 
         Sort sortSt = sortDir.equals("DESC") ? Sort.by(sortField).descending() : Sort.by(sortField).ascending();
 
-        Page<Attribute> attributeList = attributeRepo.findAllByActive(true,
+        Page<Attribute> attributeList = attributeRepo.findAllByActiveAndStatusNot(true, DocStatus.DRAFT,
                 PageRequest.of(pageNo, pageSize, sortSt));
 
         return Response.ok(attributeList).status(200).build();
@@ -68,10 +75,18 @@ public class AttributeController {
 
         if (optional.isPresent()) {
             Attribute attribute = optional.get();
-            return Response.ok(attribute).status(200).build();
+
+            Set<AttributeValue> attributeList = attributeValueRepo.findAllByAttributeIdAndActive(attribute.getId(),
+                    true);
+
+            AttributeModel model = new AttributeModel();
+            model.setAttribute(attribute);
+            model.setValues(attributeList);
+
+            return Response.ok(model).status(200).build();
         }
 
-        throw new IllegalArgumentException("No department with id " + id + " exists");
+        throw new GenericException(400, "No department with id " + id + " exists");
     }
 
     @POST
@@ -80,7 +95,7 @@ public class AttributeController {
     @Transactional
     public Response add(Attribute attribute) {
         if (attribute.id != null) {
-            throw new WebApplicationException("Id was invalidly set on request.", 422);
+            throw new GenericException(422, "Id was invalidly set on request.");
         }
 
         attributeRepo.save(attribute);
@@ -89,17 +104,21 @@ public class AttributeController {
 
     @PUT
     @Path("/{id}")
-    public Response update(@PathParam("id") UUID id, Attribute greeting) {
+    public Response update(@PathParam("id") UUID id, AttributeModel model) {
         Optional<Attribute> optional = attributeRepo.findById(id);
 
         if (optional.isPresent()) {
             Attribute attribute = optional.get();
-            entityCopyUtils.copyProperties(attribute, greeting);
+            entityCopyUtils.copyProperties(attribute, model.getAttribute());
             Attribute updateproductCategory = attributeRepo.save(attribute);
+
+            Set<AttributeValue> values = model.getValues();
+            attributeValueRepo.saveAll(values);
+
             return Response.ok(updateproductCategory).status(200).build();
         }
 
-        throw new IllegalArgumentException("No Department with id " + id + " exists");
+        throw new GenericException(400, "No Department with id " + id + " exists");
     }
 
     @DELETE
@@ -108,13 +127,13 @@ public class AttributeController {
     public Response delete(@PathParam("id") UUID id) {
 
         Attribute entity = attributeRepo.findById(id).orElseThrow(
-                () -> new WebApplicationException("Department with id of " + id + " does not exist.", 404));
+                () -> new GenericException(404, "Department with id of " + id + " does not exist."));
 
         // check if employees are tied up with department
         // Set<Profile> profile = profileRepo.findAllByDepartmentId(entity.getId());
 
         // if (profile.size() > 0) {
-        // throw new WebApplicationException("There are " + profile.size() + " employees
+        // throw new GenericException("There are " + profile.size() + " employees
         // in " + entity.getName() + ".",
         // 400);
         // }
@@ -126,20 +145,31 @@ public class AttributeController {
 
     ///////////////////////////////////////////////////////////////////////
 
+    @GET
+    @Path("/create")
+    public Response create() {
+        Optional<Attribute> optional = attributeRepo.findByStatus(DocStatus.DRAFT);
+
+        if (optional.isPresent()) {
+            AttributeModel attribute = attributeService.getAttribute(optional.get());
+            return Response.ok(attribute).status(200).build();
+        } else {
+            Attribute attribute = new Attribute();
+            attribute = attributeRepo.save(attribute);
+            AttributeModel model = attributeService.getAttribute(attribute);
+            return Response.ok(model).status(200).build();
+        }
+    }
+
+    ///////////////////////////////////////////////////////////////////////
+
     // TODO: add company
     @GET
     @Path("/attribute-value/{attributeId}")
     public Response listValue(
-            @PathParam("attributeId") UUID attributeId,
-            @QueryParam("pageNo") @DefaultValue("0") int pageNo,
-            @QueryParam("pageSize") @DefaultValue("25") int pageSize,
-            @QueryParam("sortField") @DefaultValue("createdAt") String sortField,
-            @QueryParam("sortDir") @DefaultValue("ASC") String sortDir) {
+            @PathParam("attributeId") UUID attributeId) {
 
-        Sort sortSt = sortDir.equals("DESC") ? Sort.by(sortField).descending() : Sort.by(sortField).ascending();
-
-        Page<AttributeValue> attributeList = attributeValueRepo.findAllByAttributeIdAndActive(attributeId, true,
-                PageRequest.of(pageNo, pageSize, sortSt));
+        Set<AttributeValue> attributeList = attributeValueRepo.findAllByAttributeIdAndActive(attributeId, true);
 
         return Response.ok(attributeList).status(200).build();
     }
@@ -154,7 +184,7 @@ public class AttributeController {
             return Response.ok(attribute).status(200).build();
         }
 
-        throw new IllegalArgumentException("No department with id " + id + " exists");
+        throw new GenericException(400, "No department with id " + id + " exists");
     }
 
     @POST
@@ -164,7 +194,7 @@ public class AttributeController {
     @Path("/value")
     public Response addValue(AttributeValue attribute) {
         if (attribute.id != null) {
-            throw new WebApplicationException("Id was invalidly set on request.", 422);
+            throw new GenericException(422, "Id was invalidly set on request.");
         }
 
         attributeValueRepo.save(attribute);
@@ -183,7 +213,7 @@ public class AttributeController {
             return Response.ok(updateproductCategory).status(200).build();
         }
 
-        throw new IllegalArgumentException("No Department with id " + id + " exists");
+        throw new GenericException(400, "No Department with id " + id + " exists");
     }
 
     @DELETE
@@ -192,13 +222,13 @@ public class AttributeController {
     public Response deleteValue(@PathParam("id") UUID id) {
 
         AttributeValue entity = attributeValueRepo.findById(id).orElseThrow(
-                () -> new WebApplicationException("Department with id of " + id + " does not exist.", 404));
+                () -> new GenericException(400, "Department with id of " + id + " does not exist."));
 
         // check if employees are tied up with department
         // Set<Profile> profile = profileRepo.findAllByDepartmentId(entity.getId());
 
         // if (profile.size() > 0) {
-        // throw new WebApplicationException("There are " + profile.size() + " employees
+        // throw new GenericException("There are " + profile.size() + " employees
         // in " + entity.getName() + ".",
         // 400);
         // }

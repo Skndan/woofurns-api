@@ -1,5 +1,6 @@
 package com.skndan.robin.repo.product;
 
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -16,6 +17,6 @@ public interface AttributeValueRepo
     extends CrudRepository<AttributeValue, UUID>, PagingAndSortingRepository<AttributeValue, UUID> {
 
   Page<AttributeValue> findAllByActive(boolean active, PageRequest of);
-  Page<AttributeValue> findAllByAttributeIdAndActive(UUID attributeId, boolean active, PageRequest of);
 
+  Set<AttributeValue> findAllByAttributeIdAndActive(UUID attributeId, boolean active);
 }
