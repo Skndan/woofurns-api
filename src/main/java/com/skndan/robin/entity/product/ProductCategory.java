@@ -48,11 +48,7 @@ public class ProductCategory extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "parent_id")
     private ProductCategory parent;
-
-    @JsonManagedReference
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ProductCategory> children = new HashSet<>();
-
+ 
     @OneToOne
     private FileEntity image;
 }

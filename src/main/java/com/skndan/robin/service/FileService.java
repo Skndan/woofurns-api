@@ -78,7 +78,7 @@ public class FileService {
       throw new RuntimeException("File upload failed", e);
     }
   }
-  
+
   @Transactional
   public boolean deleteFileByName(String dirPath, String name) {
     fileRepo.deleteByName(name);
@@ -126,7 +126,6 @@ public class FileService {
     // Return compressed image bytes
     return outputStream.toByteArray();
   }
- 
 
   public String getFileName(MultivaluedMap<String, String> header) {
     String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
@@ -141,9 +140,13 @@ public class FileService {
   }
 
   public void deleteFileEntity(FileEntity oldFileInfo, String filePath) {
-    if (oldFileInfo != null) {
-      deleteFileByName(filePath, oldFileInfo.getName());
-      fileRepo.deleteByName(oldFileInfo.getName());
+    try {
+      if (oldFileInfo != null) {
+        deleteFileByName(filePath, oldFileInfo.getName());
+        fileRepo.deleteByName(oldFileInfo.getName());
+      }
+    } catch (Exception e) {
+      System.out.println("DeleteFileEntity: " + e.getMessage());
     }
   }
 }

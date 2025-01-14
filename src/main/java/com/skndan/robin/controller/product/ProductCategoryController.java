@@ -116,6 +116,8 @@ public class ProductCategoryController {
 
     @PUT
     @Path("/{id}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
     @Transactional
     public Response update(@PathParam("id") UUID id, @MultipartForm MultipartFormDataInput input) {
         try {
@@ -131,9 +133,7 @@ public class ProductCategoryController {
             FileEntity fileInfo = entityService.extractFile(input, filePath);
 
             // New file incoming
-            if (fileInfo != null) {
-                productCategory.setImage(fileInfo);
-            }
+            productCategory.setImage(fileInfo);
 
             productCategory = productCategoryRepo.save(productCategory);
 
