@@ -1,17 +1,14 @@
 package com.skndan.robin.entity.product;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.skndan.robin.entity.BaseEntity;
+import com.skndan.robin.entity.common.DocStatus;
 import com.skndan.robin.entity.common.ProductType;
-import com.skndan.robin.entity.common.SaleStatus;
-import com.skndan.robin.entity.common.StatusEnum;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,6 +19,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import lombok.Getter;
@@ -48,6 +46,9 @@ public class Product extends BaseEntity {
 
     public BigDecimal offered = BigDecimal.ZERO;
 
+    @Enumerated(EnumType.STRING)
+    public DocStatus status = DocStatus.DRAFT;
+
     @ManyToOne
     public Brand brand;
 
@@ -67,14 +68,13 @@ public class Product extends BaseEntity {
     @Column(nullable = false)
     private ProductType type; // SIMPLE or VARIANT
 
- // Shipping rule
+    // Shipping rule
 
     // Bundle deal
-    
+
     @ManyToMany
     @JoinTable(name = "product_collection", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "collection_id"))
     private Set<Collection> collections = new HashSet<>();
-
 
     // Inventory ----------------------------------------------------
 
@@ -83,6 +83,14 @@ public class Product extends BaseEntity {
     private Set<ProductAttribute> attributes = new HashSet<>();
 
     // Setup ----------------------------------------------------
+
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({ "product" })
+    private Seo seo;
+
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties({ "product" })
+    private ProductStatus productStatus;
 
     // Shipping & Tax ----------------------------------------------------
 
